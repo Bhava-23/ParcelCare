@@ -6,10 +6,158 @@
 
     <title>ParcelCare | Smart Parcel Delivery</title>
 
+    <!-- Browser tab icon -->
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 48 48'%3E%3Crect width='48' height='48' rx='13' fill='%232563eb'/%3E%3Crect x='9' y='14' width='30' height='7' rx='2' fill='white'/%3E%3Crect x='11' y='19' width='26' height='18' rx='3' fill='white'/%3E%3Ccircle cx='36' cy='36' r='9' fill='%2316a34a' stroke='white' stroke-width='3'/%3E%3Cpath d='M31.5 36l3 3 5-6.5' fill='none' stroke='white' stroke-width='2.6' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
+
     <link rel="stylesheet" href="style.css">
 </head>
 
 <body>
+
+    <!-- ParcelCare logo drawing (used in navbar, footer and login page) -->
+    <svg width="0" height="0" style="position:absolute" aria-hidden="true">
+        <defs>
+            <linearGradient id="pcLogoGrad" x1="0" y1="0" x2="1" y2="1">
+                <stop offset="0" stop-color="#1e3a8a"/>
+                <stop offset="1" stop-color="#2563eb"/>
+            </linearGradient>
+        </defs>
+        <symbol id="pcLogoMark" viewBox="0 0 48 48">
+            <rect width="48" height="48" rx="13" fill="url(#pcLogoGrad)"/>
+            <rect x="11" y="19" width="26" height="18" rx="3" fill="#fff"/>
+            <rect x="9" y="14" width="30" height="7" rx="2" fill="#fff" opacity=".92"/>
+            <rect x="21" y="14" width="6" height="23" fill="#2563eb" opacity=".22"/>
+            <g class="logo-badge">
+                <circle cx="36" cy="36" r="9" fill="#16a34a" stroke="#fff" stroke-width="3"/>
+                <path class="logo-tick" d="M31.5 36l3 3 5-6.5" fill="none" stroke="#fff" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/>
+            </g>
+        </symbol>
+    </svg>
+
+
+    <!-- =====================================================
+         NEW: LOGIN / REGISTRATION (shown when nobody is logged in)
+         ===================================================== -->
+    <div class="auth-view" id="authView">
+
+        <div class="auth-side">
+            <div class="logo auth-logo">
+                <svg class="logo-mark" viewBox="0 0 48 48" aria-hidden="true"><use href="#pcLogoMark"/></svg>
+                <span class="logo-text">Parcel<b>Care</b></span>
+            </div>
+
+            <h1>Every parcel, one place.</h1>
+            <p>Add your parcels, record tracking checkpoints and resolve delivery problems from one simple platform.</p>
+
+            <ul class="auth-points">
+                <li>📍 Track each parcel on a clear timeline</li>
+                <li>🛡️ Predict and prevent failed deliveries</li>
+                <li>🌱 Compare the carbon cost of delivery options</li>
+            </ul>
+        </div>
+
+        <div class="auth-card">
+
+            <!-- Choose which portal you are using -->
+            <div class="role-switch" role="tablist" aria-label="Choose your portal">
+                <button type="button" role="tab" id="roleCustomer" aria-selected="true" onclick="setAuthRole('customer')">👤 Customer</button>
+                <button type="button" role="tab" id="roleCompany" aria-selected="false" onclick="setAuthRole('company')">🏢 Company / Post Office</button>
+            </div>
+            <p class="role-help" id="roleHelp"></p>
+
+            <div class="auth-tabs" role="tablist" aria-label="Log in or create account">
+                <button type="button" role="tab" id="tabLogin" aria-selected="true" onclick="showAuthTab('login')">Log in</button>
+                <button type="button" role="tab" id="tabRegister" aria-selected="false" onclick="showAuthTab('register')">Create account</button>
+            </div>
+
+            <!-- Login -->
+            <form id="loginForm" novalidate aria-labelledby="tabLogin">
+
+                <h2 id="loginHeading">Customer login</h2>
+                <p class="auth-sub" id="loginSub">Log in to track your parcels.</p>
+
+                <div class="field">
+                    <label for="loginId">Username or email</label>
+                    <input type="text" id="loginId" autocomplete="username" placeholder="e.g. bhavadharani">
+                </div>
+
+                <div class="field">
+                    <label for="loginPassword">Password</label>
+                    <div class="pw-wrap">
+                        <input type="password" id="loginPassword" autocomplete="current-password" placeholder="Your password">
+                        <button type="button" class="pw-toggle" data-target="loginPassword" aria-label="Show password" aria-pressed="false">👁</button>
+                    </div>
+                </div>
+
+                <div class="form-errors" id="loginError" role="alert" hidden></div>
+
+                <button type="submit" class="confirm-btn" id="loginSubmit">Log in</button>
+
+                <p class="auth-switch">New here? <button type="button" class="link-btn" onclick="showAuthTab('register')">Create an account</button></p>
+            </form>
+
+            <!-- Register -->
+            <form id="registerForm" novalidate hidden aria-labelledby="tabRegister">
+
+                <h2 id="regHeading">Create a customer account</h2>
+                <p class="auth-sub">It takes less than a minute.</p>
+
+                <div class="field">
+                    <label for="regName" id="regNameLabel">Full name</label>
+                    <input type="text" id="regName" autocomplete="name" maxlength="40" placeholder="e.g. Bhavadharani S">
+                </div>
+
+                <div class="field-row">
+                    <div class="field">
+                        <label for="regUsername">Username</label>
+                        <input type="text" id="regUsername" autocomplete="username" maxlength="20" placeholder="3-20 letters, numbers, _">
+                    </div>
+                    <div class="field">
+                        <label for="regEmail">Email</label>
+                        <input type="email" id="regEmail" autocomplete="email" placeholder="you@example.com">
+                    </div>
+                </div>
+
+                <div class="field">
+                    <label for="regPassword">Password</label>
+                    <div class="pw-wrap">
+                        <input type="password" id="regPassword" autocomplete="new-password" placeholder="At least 8 characters, letters and numbers">
+                        <button type="button" class="pw-toggle" data-target="regPassword" aria-label="Show password" aria-pressed="false">👁</button>
+                    </div>
+                    <div class="pw-meter" aria-hidden="true"><span id="pwMeterBar"></span></div>
+                    <small id="pwMeterText">Use at least 8 characters with a letter and a number.</small>
+                </div>
+
+                <div class="field">
+                    <label for="regConfirm">Confirm password</label>
+                    <div class="pw-wrap">
+                        <input type="password" id="regConfirm" autocomplete="new-password" placeholder="Type the password again">
+                        <button type="button" class="pw-toggle" data-target="regConfirm" aria-label="Show password" aria-pressed="false">👁</button>
+                    </div>
+                </div>
+
+                <div class="form-errors" id="registerError" role="alert" hidden></div>
+
+                <button type="submit" class="confirm-btn" id="registerSubmit">Create account</button>
+
+                <p class="auth-switch">Already registered? <button type="button" class="link-btn" onclick="showAuthTab('login')">Log in</button></p>
+            </form>
+
+            <p class="auth-disclaimer">
+                🔒 <strong>Demo login.</strong> Accounts are saved only in this browser (localStorage), and the
+                password is stored as a salted hash, never as plain text. This is a front-end demonstration,
+                not secure production authentication. Please don't use a real password.
+                Because data lives in the browser, a company and a customer only see each other's data
+                when they use the same browser on the same device. A real service would need a server.
+            </p>
+        </div>
+    </div>
+
+
+    <!-- =====================================================
+         THE APP (shown after login)
+         ===================================================== -->
+    <div id="appView" hidden>
 
     <!-- ParcelCare Application -->
      <div class="app">
@@ -17,18 +165,26 @@
     <!-- Navigation Bar -->
     <nav class="navbar">
         <div class="logo">
-            📦 ParcelCare
+            <svg class="logo-mark" viewBox="0 0 48 48" aria-hidden="true"><use href="#pcLogoMark"/></svg>
+            <span class="logo-text">Parcel<b>Care</b></span>
         </div>
 
         <div class="nav-links">
             <a href="#dashboard">Dashboard</a>
+            <a href="#myParcels" data-role="customer">My Parcels</a>
+            <a href="#myParcels" data-role="company">Bookings</a>
             <a href="#tracking">Tracking</a>
-            <a href="#issues">Issues</a>
-            <a href="#settings">Settings</a>
+            <a href="#confidence" data-role="customer">Confidence</a>
+            <a href="#issues" data-role="customer">Issues</a>
+            <a href="#settings" data-role="customer">Settings</a>
         </div>
 
-        <div class="profile">
-            👤 Bhavadharani
+        <div class="nav-user">
+            <button type="button" class="profile" id="profileBtn" onclick="openProfile()" aria-label="Open your profile">
+                <span class="avatar" id="profileInitial">U</span>
+                <span id="profileName">User</span>
+            </button>
+            <button type="button" class="logout-btn" onclick="logout()">Log out</button>
         </div>
     </nav>
 
@@ -36,62 +192,129 @@
     <!-- Main Dashboard -->
     <main>
 
-        <!-- Welcome Section -->
-        <section class="hero" id="dashboard">
+        <!-- Welcome Section (one hero per portal) -->
+        <div id="dashboard">
+
+        <section class="hero" data-role="customer">
             <div>
-                <p class="welcome">WELCOME BACK 👋</p>
-                <h1>Manage your parcels with ease.</h1>
+                <p class="welcome">WELCOME BACK, <span id="welcomeName">USER</span> 👋</p>
+                <h1>Track your parcels with ease.</h1>
                 <p>
-                    Track, reschedule and resolve delivery problems
-                    from one simple platform.
+                    Enter your Parcel ID to follow your parcel, reschedule the delivery
+                    and resolve problems from one simple platform.
                 </p>
             </div>
 
             <div class="hero-icon">
                 📦
             </div>
+
             <!-- Quick Actions -->
-<section class="quick-actions">
+            <section class="quick-actions">
 
-    <button onclick="openReschedule()">
-        🕒
-        <span>Reschedule</span>
-    </button>
+                <button onclick="focusSearch()">
+                    🔎
+                    <span>Track Parcel</span>
+                </button>
 
-    <button onclick="openIssue()">
-        🛠️
-        <span>Report Issue</span>
-    </button>
+                <button onclick="openReschedule()">
+                    🕒
+                    <span>Reschedule</span>
+                </button>
 
-    <button onclick="openDamage()">
-        📸
-        <span>Report Damage</span>
-    </button>
+                <button onclick="openIssue()">
+                    🛠️
+                    <span>Report Issue</span>
+                </button>
 
-    <button onclick="openRefund()">
-        💰
-        <span>Refund</span>
-    </button>
+                <button onclick="openDamage()">
+                    📸
+                    <span>Report Damage</span>
+                </button>
 
-</section>
+                <button onclick="openRefund()">
+                    💰
+                    <span>Refund</span>
+                </button>
+
+            </section>
         </section>
+
+        <section class="hero company-hero" data-role="company">
+            <div>
+                <p class="welcome">COMPANY PORTAL · <span id="companyName">COMPANY</span></p>
+                <h1>Manage your bookings.</h1>
+                <p>
+                    Add a booking when you receive a parcel, then update its status as it moves.
+                    Customers see your updates when they track the parcel.
+                </p>
+            </div>
+
+            <div class="hero-icon">
+                🏢
+            </div>
+
+            <section class="quick-actions company-actions">
+
+                <button onclick="openAddParcel()">
+                    ➕
+                    <span>New booking</span>
+                </button>
+
+                <button onclick="loadDemoParcels()">
+                    🧪
+                    <span>Load sample bookings</span>
+                </button>
+
+                <button onclick="document.getElementById('myParcels').scrollIntoView({behavior:'smooth'})">
+                    📋
+                    <span>View bookings</span>
+                </button>
+
+            </section>
+        </section>
+
+        </div>
+
+        <!-- Honest demo notice -->
+        <div class="demo-notice" id="demoNotice" role="note">
+            <span>ℹ️</span>
+            <p>
+                <strong>Demo mode.</strong> Data is saved only in this browser (localStorage), so company and customer
+                accounts share information only on the same browser and device. Parcel locations and statuses are
+                typed in by the company. There is no live GPS or courier tracking.
+            </p>
+            <button type="button" onclick="dismissNotice()" aria-label="Dismiss notice">×</button>
+        </div>
 
 
         <!-- Parcel Search -->
         <section class="search-section">
-            <h2>Find Your Parcel</h2>
+            <h2 id="searchHeading">Track Your Parcel</h2>
 
             <div class="search-box">
                 <input type="text"
        id="parcelSearch"
        placeholder="Enter Parcel ID (e.g. PC10234)"
+       aria-label="Parcel ID"
+       maxlength="12"
        onkeypress="if(event.key === 'Enter') searchParcel()">
 
-                <button onclick="searchParcel()">
+                <input type="text"
+       id="parcelVerify"
+       data-role="customer"
+       placeholder="Last 4 digits of booking mobile"
+       aria-label="Last 4 digits of the mobile number used for the booking"
+       maxlength="4"
+       inputmode="numeric"
+       onkeypress="if(event.key === 'Enter') searchParcel()">
+
+                <button onclick="searchParcel()" id="searchBtn">
                     Track Parcel
                 </button>
             </div>
-            <div id="problemResult" class="problem-result"></div>
+            <p class="search-hint" id="searchHint"></p>
+            <div id="problemResult" class="problem-result" role="status"></div>
         </section>
 
 
@@ -99,28 +322,69 @@
         <section class="overview">
             <div class="stat-card">
                 <span>📦</span>
-                <h3 id="totalParcels">3</h3>
-                <p>Total Parcels</p>
+                <h3 id="totalParcels">0</h3>
+                <p id="statLabel1">Total Parcels</p>
             </div>
 
             <div class="stat-card">
                 <span>🚚</span>
-                <h3 id="outForDelivery">1</h3>
-                <p>Out for Delivery</p>
+                <h3 id="outForDelivery">0</h3>
+                <p id="statLabel2">Out for Delivery</p>
             </div>
 
             <div class="stat-card">
                 <span>⚠️</span>
-                <h3 id="actionRequired">1</h3>
-                <p>Action Required</p>
+                <h3 id="actionRequired">0</h3>
+                <p id="statLabel3">Action Required</p>
             </div>
 
             <div class="stat-card">
                 <span>💰</span>
-                <h3 id="refundPending">1</h3>
-                <p>Refund Pending</p>
+                <h3 id="refundPending">0</h3>
+                <p id="statLabel4">Refund Pending</p>
             </div>
         </section>
+
+
+        <!-- My Parcels + Recent Activity -->
+        <div class="dash-grid">
+
+            <section class="my-parcels-section" id="myParcels">
+
+                <div class="section-heading">
+                    <div>
+                        <p class="small-title" id="listKicker">MY PARCELS</p>
+                        <h2 id="listTitle">Your Parcels</h2>
+                    </div>
+                    <button type="button" class="add-btn" id="listAddBtn" onclick="listAction()">🔎 Track a parcel</button>
+                </div>
+
+                <input type="search" class="booking-filter" id="bookingFilter" data-role="company"
+                       placeholder="Filter bookings by ID, item or customer" aria-label="Filter bookings">
+
+                <div class="parcel-list" id="parcelList"></div>
+
+                <div class="empty-state" id="parcelEmpty" hidden>
+                    <div class="empty-icon">📭</div>
+                    <h3 id="emptyTitle">No parcels yet</h3>
+                    <p id="emptyText"></p>
+                    <div class="empty-actions" id="emptyActions"></div>
+                </div>
+
+            </section>
+
+            <section class="activity-section">
+                <div class="section-heading">
+                    <div>
+                        <p class="small-title">RECENT ACTIVITY</p>
+                        <h2>What's new</h2>
+                    </div>
+                </div>
+
+                <div class="activity-list" id="activityList"></div>
+            </section>
+
+        </div>
 
 
         <!-- Active Parcel -->
@@ -128,171 +392,258 @@
             <div class="section-heading">
                 <div>
                     <p class="small-title">ACTIVE PARCEL</p>
-                    <h2 id="activeParcelId">Parcel PC10234</h2>
+                    <h2 id="activeParcelId">Parcel</h2>
+                    <p class="parcel-subtitle" id="parcelSubtitle"></p>
                 </div>
 
-                <span class="status" id="parcelStatus">OUT FOR DELIVERY</span>
+                <span class="status" id="parcelStatus">STATUS</span>
             </div>
+
+            <!-- Banner for delayed / damaged / delivered / cancelled parcels -->
+            <div class="track-banner" id="trackBanner" hidden></div>
 
             <div class="parcel-info">
 
                 <div>
-                    <p>📍 Current Location</p>
-                    <strong id="parcelLocation">Madurai Delivery Hub</strong>
+                    <p>📍 Current recorded location</p>
+                    <strong id="parcelLocation">-</strong>
+                    <small class="info-note">Entered manually (demo). Not live GPS.</small>
                 </div>
 
                 <div>
-                    <p>🕒 Expected Delivery</p>
-                    <strong id="parcelDelivery">Today, 4:00 PM – 6:00 PM</strong>
+                    <p>🕒 Expected delivery</p>
+                    <strong id="parcelDelivery">-</strong>
                 </div>
 
                 <div>
-                    <p>📦 Delivery Type</p>
-                    <strong id="parcelType">Standard Delivery</strong>
+                    <p>🔄 Last updated</p>
+                    <strong id="parcelUpdated">-</strong>
+                </div>
+
+                <div>
+                    <p>🏭 Source</p>
+                    <strong id="parcelSource">-</strong>
+                </div>
+
+                <div>
+                    <p>🏠 Destination</p>
+                    <strong id="parcelDestination">-</strong>
+                </div>
+
+                <div>
+                    <p>🚚 Courier</p>
+                    <strong id="parcelCourier">-</strong>
+                </div>
+
+                <div data-role="company">
+                    <p>👤 Customer</p>
+                    <strong id="parcelCustomer">-</strong>
                 </div>
 
             </div>
-            <!-- Parcel Activity History -->
-<section class="history-section">
 
-    <div class="section-heading">
-        <div>
-            <p class="small-title">PARCEL ACTIVITY</p>
-            <h2>Delivery History</h2>
-        </div>
-    </div>
-
-    <div class="history-list" id="deliveryHistory">
-
-        <div class="history-item">
-            <div class="history-dot completed">✓</div>
-
-            <div>
-                <strong>Parcel Ordered</strong>
-                <p>Parcel order was successfully created.</p>
-                <span>Sep 25, 10:30 AM</span>
-            </div>
-        </div>
-
-        <div class="history-item">
-            <div class="history-dot completed">✓</div>
-
-            <div>
-                <strong>Parcel Shipped</strong>
-                <p>Parcel left the sender's location.</p>
-                <span>Sep 26, 08:15 AM</span>
-            </div>
-        </div>
-
-        <div class="history-item">
-            <div class="history-dot active">🚚</div>
-
-            <div>
-                <strong>Out for Delivery</strong>
-                <p>Parcel is currently at Madurai Delivery Hub.</p>
-                <span>Today, 09:00 AM</span>
-            </div>
-        </div>
-
-        <div class="history-item">
-            <div class="history-dot">🏠</div>
-
-            <div>
-                <strong>Delivery Pending</strong>
-                <p>Waiting for successful delivery.</p>
-                <span>Expected Today, 4:00 PM – 6:00 PM</span>
-            </div>
-        </div>
-
-    </div>
-
-</section>
-<!-- My Parcels -->
-<section class="my-parcels-section">
-
-    <div class="section-heading">
-        <div>
-            <p class="small-title">MY PARCELS</p>
-            <h2>Recent Deliveries</h2>
-        </div>
-    </div>
-
-    <div class="parcel-list">
-
-        <div class="parcel-card" onclick="viewParcel('PC10234')">
-            <div class="parcel-card-icon">📦</div>
-
-            <div class="parcel-card-info">
-                <strong>PC10234</strong>
-                <p>Electronics • Standard Delivery</p>
-            </div>
-
-            <span class="parcel-status delivering">
-                Out for Delivery
-            </span>
-        </div>
-
-        <div class="parcel-card" onclick="viewParcel('PC10567')">
-            <div class="parcel-card-icon">📦</div>
-
-            <div class="parcel-card-info">
-                <strong>PC10567</strong>
-                <p>Books • Standard Delivery</p>
-            </div>
-
-            <span class="parcel-status delivered">
-                Delivered
-            </span>
-        </div>
-
-        <div class="parcel-card" onclick="viewParcel('PC10891')">
-            <div class="parcel-card-icon">📦</div>
-
-            <div class="parcel-card-info">
-                <strong>PC10891</strong>
-                <p>Clothing • Express Delivery</p>
-            </div>
-
-            <span class="parcel-status issue">
-                Action Required
-            </span>
-        </div>
-
-    </div>
-
-</section>
+            <p class="parcel-notes" id="parcelNotes" hidden></p>
 
             <!-- Delivery Progress -->
             <div class="progress-container">
 
-    <div class="progress-line" id="progressLine"></div>
+                <div class="progress-line"><div class="progress-fill" id="progressFill"></div></div>
 
-    <div class="progress-step completed" id="stepOrdered">
-        <div>✓</div>
-        <p>Ordered</p>
-    </div>
+                <div class="progress-step" id="stepOrdered">
+                    <div>📝</div>
+                    <p>Ordered</p>
+                </div>
 
-    <div class="progress-step completed" id="stepShipped">
-        <div>✓</div>
-        <p>Shipped</p>
-    </div>
+                <div class="progress-step" id="stepShipped">
+                    <div>📦</div>
+                    <p>Shipped</p>
+                </div>
 
-    <div class="progress-step active" id="stepDelivery">
-    <div id="deliveryStepIcon">🚚</div>
-    <p id="deliveryStepText">Out for Delivery</p>
-</div>
-    <div class="progress-step" id="stepDelivered">
-        <div>🏠</div>
-        <p>Delivered</p>
-    </div>
+                <div class="progress-step" id="stepDelivery">
+                    <div>🚚</div>
+                    <p>Out for Delivery</p>
+                </div>
 
-</div>
+                <div class="progress-step" id="stepDelivered">
+                    <div>🏠</div>
+                    <p>Delivered</p>
+                </div>
+
+            </div>
+
+            <!-- Actions for this parcel -->
+            <div class="track-actions" data-role="customer">
+                <button type="button" onclick="openReschedule()">🕒 Reschedule</button>
+                <button type="button" onclick="openIssue()">🛠️ Report issue</button>
+                <button type="button" onclick="openDamage()">📸 Report damage</button>
+                <button type="button" onclick="verifyDelivery()">🔐 Not received?</button>
+                <button type="button" class="danger" onclick="openRefund()">💰 Cancel / refund</button>
+            </div>
+
+            <!-- Parcel Activity History -->
+            <section class="history-section">
+
+                <div class="section-heading">
+                    <div>
+                        <p class="small-title">PARCEL ACTIVITY</p>
+                        <h2>Delivery History</h2>
+                    </div>
+                </div>
+
+                <div class="timeline" id="deliveryHistory"></div>
+
+            </section>
+
+            <!-- Open cases for this parcel -->
+            <section class="cases-section" id="casesSection" hidden>
+                <h3 id="casesTitle">Issues &amp; reports for this parcel</h3>
+                <div id="caseList"></div>
+            </section>
+
+            <!-- Add a tracking checkpoint -->
+            <section class="update-panel" data-role="company">
+                <h3>➕ Add a tracking checkpoint</h3>
+                <p class="update-note" id="cpHint">
+                    Demo only: in a real system, courier staff or a courier API would add checkpoints.
+                    Here you act as the courier and enter them by hand.
+                </p>
+
+                <form id="checkpointForm" novalidate>
+                    <div class="form-grid">
+                        <div class="field">
+                            <label for="cpStatus">Status</label>
+                            <select id="cpStatus"></select>
+                        </div>
+                        <div class="field">
+                            <label for="cpLocation">Location</label>
+                            <input type="text" id="cpLocation" maxlength="60" placeholder="e.g. Trichy Sorting Hub">
+                        </div>
+                        <div class="field field-full">
+                            <label for="cpNote">Note (optional)</label>
+                            <input type="text" id="cpNote" maxlength="200" placeholder="e.g. Left the hub at 6 PM">
+                        </div>
+                    </div>
+
+                    <div class="form-errors" id="cpError" role="alert" hidden></div>
+
+                    <button type="submit" class="confirm-btn" id="cpSubmit">Add checkpoint</button>
+                </form>
+            </section>
+
+        </section>
+
+
+        <!-- DELIVERY CONFIDENCE ENGINE + ECO DELIVERY (hidden until a parcel is opened) -->
+        <section class="confidence-section" id="confidence" data-role="customer" style="display:none;">
+
+            <div class="section-heading">
+                <div>
+                    <p class="small-title">DELIVERY CONFIDENCE</p>
+                    <h2>Will this parcel reach you?</h2>
+                </div>
+
+                <select id="confidenceParcel" onchange="updateConfidence(this.value)" aria-label="Choose parcel"></select>
+            </div>
+
+            <div class="confidence-grid">
+
+                <!-- Score ring -->
+                <div class="confidence-score-card">
+                    <div class="score-ring">
+                        <svg width="150" height="150" viewBox="0 0 150 150" aria-hidden="true">
+                            <circle class="ring-bg" cx="75" cy="75" r="64"></circle>
+                            <circle class="ring-arc" id="scoreArc" cx="75" cy="75" r="64"></circle>
+                        </svg>
+
+                        <div class="score-number">
+                            <div>
+                                <span id="scoreValue">0</span>%
+                                <small id="scoreBand"></small>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="score-text">
+                        <strong id="scoreVerdict"></strong>
+                        <p id="scoreWhy"></p>
+                    </div>
+                </div>
+
+                <!-- Reasons behind the score -->
+                <div class="confidence-factors">
+                    <h3>Why this score</h3>
+                    <p class="factor-intro">Every parcel starts at 100 points. Each risk takes points away and each helpful step adds points. It is a simple rule-based score, not artificial intelligence.</p>
+                    <ul id="scoreFactors"></ul>
+                </div>
+
+            </div>
+
+            <!-- Proactive fixes -->
+            <div class="confidence-actions">
+                <h3>Fix it before it fails</h3>
+                <div id="scoreActions"></div>
+            </div>
+
+            <!-- Eco delivery -->
+            <div class="eco-box">
+                <h3>🌱 Choose how it travels</h3>
+
+                <div class="eco-modes" id="ecoModes"></div>
+
+                <div class="eco-result" id="ecoResult"></div>
+
+                <details class="eco-math">
+                    <summary>How is this calculated?</summary>
+                    <div id="ecoMath"></div>
+                </details>
+
+                <p class="eco-note">
+                    CO₂ values are estimates based on average emission factors
+                    (grams per parcel-km). They compare delivery modes and are not measured data.
+                </p>
+            </div>
+
+        </section>
+
+
+        <!-- Missed Delivery Prevention (shown for a parcel that is out for delivery) -->
+        <section class="prevention-section" id="preventionSection" data-role="customer" hidden>
+
+            <div class="prevention-content">
+
+                <div class="prevention-icon">
+                    🔔
+                </div>
+
+                <div>
+                    <p class="small-title">DELIVERY REMINDER</p>
+                    <h2 id="reminderTitle">Your parcel is arriving soon</h2>
+                    <p id="reminderText"></p>
+                </div>
+
+            </div>
+
+            <div class="prevention-actions">
+
+                <button onclick="confirmAvailability()">
+                    ✓ I'm Available
+                </button>
+
+                <button onclick="openReschedule(reminderParcelId)">
+                    🕒 Reschedule
+                </button>
+
+                <button onclick="openSafeDelivery()">
+                    🏠 Safe Delivery
+                </button>
+
+            </div>
 
         </section>
 
 
         <!-- Action Center -->
-        <section class="action-section" id="issues">
+        <section class="action-section" id="issues" data-role="customer">
 
             <div class="section-heading">
                 <div>
@@ -326,74 +677,326 @@
                     <h3>Delivery Verification</h3>
                     <p>Report a parcel marked delivered but not received.</p>
                 </button>
+
                 <button class="action-card" onclick="openSafeDelivery()">
-                <span>🏠</span>
-                <h3>Safe Delivery</h3>
-                <p>Choose a trusted place or person for delivery.</p>
-                 </button>
-                 <button class="action-card" onclick="openRefund()">
-                 <span>💰</span>
-                 <h3>Cancellation & Refund</h3>
-                 <p>Cancel your parcel and track the refund status.</p>
-                 </button>
+                    <span>🏠</span>
+                    <h3>Safe Delivery</h3>
+                    <p>Choose who can safely receive your parcels.</p>
+                </button>
+
+                <button class="action-card" onclick="openRefund()">
+                    <span>💰</span>
+                    <h3>Cancellation & Refund</h3>
+                    <p>Cancel your parcel and track the refund status.</p>
+                </button>
 
             </div>
+
             <div class="help-assistant">
 
-    <div class="help-icon">🤖</div>
+                <div class="help-icon">🤖</div>
 
-    <div class="help-content">
-        <p class="small-title">SMART ASSISTANT</p>
+                <div class="help-content">
+                    <p class="small-title">SMART ASSISTANT</p>
 
-        <h2>What happened to your parcel?</h2>
+                    <h2>What happened to your parcel?</h2>
 
-        <p>
-            Select a problem and ParcelCare will suggest the next action.
+                    <p>
+                        Select a problem and ParcelCare will suggest the next action.
+                        (These are fixed rules, not artificial intelligence.)
+                    </p>
+
+                    <div class="help-options">
+
+                        <button onclick="getHelp('late')">
+                            🚚 Parcel is delayed
+                        </button>
+
+                        <button onclick="getHelp('missing')">
+                            📦 Parcel not received
+                        </button>
+
+                        <button onclick="getHelp('damaged')">
+                            📸 Parcel is damaged
+                        </button>
+
+                        <button onclick="getHelp('unavailable')">
+                            🕒 I'm unavailable
+                        </button>
+
+                    </div>
+
+                    <div id="helpResult" class="help-result" aria-live="polite"></div>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- Settings -->
+        <section class="settings-section" id="settings" data-role="customer">
+
+            <div class="section-heading">
+                <div>
+                    <p class="small-title">PREFERENCES</p>
+                    <h2>Settings</h2>
+                </div>
+            </div>
+
+            <div class="settings-list">
+
+                <div class="setting-item">
+                    <div>
+                        <strong>Delivery Notifications</strong>
+                        <p>Receive alerts when your parcel status changes.</p>
+                    </div>
+
+                    <label class="switch">
+                        <input type="checkbox" id="setNotifications" aria-label="Delivery notifications">
+                        <span class="slider"></span>
+                    </label>
+                </div>
+
+                <div class="setting-item">
+                    <div>
+                        <strong>SMS Alerts</strong>
+                        <p>Receive important delivery updates through SMS.</p>
+                    </div>
+
+                    <label class="switch">
+                        <input type="checkbox" id="setSms" aria-label="SMS alerts">
+                        <span class="slider"></span>
+                    </label>
+                </div>
+
+                <div class="setting-item">
+                    <div>
+                        <strong>Missed Delivery Reminder</strong>
+                        <p>Show a reminder when a parcel is out for delivery.</p>
+                    </div>
+
+                    <label class="switch">
+                        <input type="checkbox" id="setReminder" aria-label="Missed delivery reminder">
+                        <span class="slider"></span>
+                    </label>
+                </div>
+
+                <div class="setting-item">
+                    <div>
+                        <strong>When are you usually home?</strong>
+                        <p>Used by Delivery Confidence to check if a delivery suits you.</p>
+                    </div>
+
+                    <div class="availability-picker">
+                        <select id="availableFrom" onchange="saveAvailability()" aria-label="Available from"></select>
+                        <span>to</span>
+                        <select id="availableTo" onchange="saveAvailability()" aria-label="Available until"></select>
+                    </div>
+                </div>
+
+            </div>
+
+            <p class="settings-note">Notification and SMS switches are saved as preferences only. This demo does not send real alerts.</p>
+
+        </section>
+
+
+        <!-- Customer Support -->
+        <section class="support-section" id="support" data-role="customer">
+
+            <div class="support-icon">💬</div>
+
+            <div class="support-content">
+                <p class="small-title">CUSTOMER SUPPORT</p>
+
+                <h2>Still need help?</h2>
+
+                <p>
+                    Send a support request about a delivery, cancellation, refund or dispute.
+                    Requests are saved in this demo so you can see them below.
+                </p>
+
+                <div class="support-actions">
+
+                    <button onclick="contactSupport()">
+                        💬 Contact Support
+                    </button>
+
+                    <button onclick="viewHelp()">
+                        ❓ View Help Guide
+                    </button>
+
+                </div>
+
+                <div class="support-list" id="supportList"></div>
+            </div>
+
+        </section>
+
+
+<!-- =====================================================
+     MODALS
+     ===================================================== -->
+
+<!-- Add Parcel Modal -->
+<div class="modal" id="addParcelModal">
+
+    <div class="modal-content modal-wide">
+
+        <button class="close-btn" onclick="closeAddParcel()" aria-label="Close">×</button>
+
+        <div class="modal-icon">➕</div>
+
+        <h2>New Booking</h2>
+
+        <p class="modal-description">
+            Enter the details of the parcel you received. The customer will track it with the Parcel ID and the last 4 digits of the mobile number you enter here.
         </p>
 
-        <div class="help-options">
+        <form id="addParcelForm" novalidate>
 
-            <button onclick="getHelp('late')">
-                🚚 Parcel is delayed
-            </button>
+            <div class="form-grid">
 
-            <button onclick="getHelp('missing')">
-                📦 Parcel not received
-            </button>
+                <div class="field">
+                    <label for="apCustomer">Customer name</label>
+                    <input type="text" id="apCustomer" maxlength="40" placeholder="e.g. Bhavadharani S">
+                </div>
 
-            <button onclick="getHelp('damaged')">
-                📸 Parcel is damaged
-            </button>
+                <div class="field">
+                    <label for="apMobile">Customer mobile number</label>
+                    <input type="tel" id="apMobile" maxlength="10" inputmode="numeric" placeholder="10-digit mobile number">
+                    <small>The last 4 digits are used by the customer to unlock tracking.</small>
+                </div>
 
-            <button onclick="getHelp('unavailable')">
-                🕒 I'm unavailable
-            </button>
+                <div class="field">
+                    <label for="apId">Parcel ID</label>
+                    <div class="input-row">
+                        <input type="text" id="apId" maxlength="12" autocomplete="off">
+                        <button type="button" class="mini-btn" onclick="regenParcelId()">New ID</button>
+                    </div>
+                    <small>5 to 12 letters or numbers. Must be unique.</small>
+                </div>
 
-        </div>
+                <div class="field">
+                    <label for="apName">Parcel / product name</label>
+                    <input type="text" id="apName" maxlength="60" placeholder="e.g. Wireless headphones">
+                </div>
 
-        <div id="helpResult" class="help-result"></div>
+                <div class="field">
+                    <label for="apCourier">Courier / service (your company)</label>
+                    <input type="text" id="apCourier" maxlength="40" list="courierList" placeholder="e.g. India Post">
+                    <datalist id="courierList">
+                        <option value="India Post"></option>
+                        <option value="DTDC"></option>
+                        <option value="Delhivery"></option>
+                        <option value="Blue Dart"></option>
+                        <option value="Other courier"></option>
+                    </datalist>
+                </div>
+
+                <div class="field">
+                    <label for="apDate">Expected delivery date</label>
+                    <input type="date" id="apDate">
+                </div>
+
+                <div class="field">
+                    <label for="apSource">Sender / source location</label>
+                    <input type="text" id="apSource" maxlength="60" placeholder="e.g. Chennai">
+                </div>
+
+                <div class="field">
+                    <label for="apDestination">Destination address</label>
+                    <input type="text" id="apDestination" maxlength="100" placeholder="e.g. 12, Anna Nagar, Madurai">
+                </div>
+
+                <div class="field">
+                    <label for="apStatus">Initial status</label>
+                    <select id="apStatus"></select>
+                </div>
+
+                <div class="field">
+                    <label for="apLocation">Current location (optional)</label>
+                    <input type="text" id="apLocation" maxlength="60" placeholder="Defaults to the source">
+                </div>
+
+            </div>
+
+            <details class="more-details">
+                <summary>More details (optional, used by Delivery Confidence)</summary>
+
+                <div class="form-grid">
+
+                    <div class="field">
+                        <label for="apValue">Order value (₹)</label>
+                        <input type="number" id="apValue" min="0" max="1000000" step="1" placeholder="e.g. 1500">
+                    </div>
+
+                    <div class="field">
+                        <label for="apPayment">Payment</label>
+                        <select id="apPayment">
+                            <option>Prepaid</option>
+                            <option>Cash on delivery</option>
+                        </select>
+                    </div>
+
+                    <div class="field">
+                        <label for="apSlot">Delivery time window</label>
+                        <select id="apSlot">
+                            <option value="10">10:00 AM - 12:00 PM</option>
+                            <option value="14" selected>2:00 PM - 4:00 PM</option>
+                            <option value="17">5:00 PM - 8:00 PM</option>
+                        </select>
+                    </div>
+
+                    <div class="field">
+                        <label for="apDistance">Approx. distance (km)</label>
+                        <input type="number" id="apDistance" min="1" max="5000" step="1" value="100">
+                    </div>
+
+                    <div class="field field-full check-row">
+                        <label><input type="checkbox" id="apFragile"> Fragile item</label>
+                        <label><input type="checkbox" id="apHard"> Gated entry or hard-to-find address</label>
+                    </div>
+
+                    <div class="field field-full">
+                        <label for="apNotes">Delivery instructions / notes</label>
+                        <textarea id="apNotes" rows="2" maxlength="200" placeholder="e.g. Call before arriving"></textarea>
+                    </div>
+
+                </div>
+            </details>
+
+            <div class="form-errors" id="apErrors" role="alert" hidden></div>
+
+            <button type="submit" class="confirm-btn">Create Booking</button>
+
+        </form>
 
     </div>
 
 </div>
 
-        </section>
-        <!-- Reschedule Modal -->
+<!-- Reschedule Modal -->
 <div class="modal" id="rescheduleModal">
 
     <div class="modal-content">
 
-        <button class="close-btn" onclick="closeReschedule()">×</button>
+        <button class="close-btn" onclick="closeReschedule()" aria-label="Close">×</button>
 
         <div class="modal-icon">🕒</div>
 
         <h2>Reschedule Your Delivery</h2>
 
         <p class="modal-description">
-            Choose a convenient delivery slot for your parcel.
+            Choose a convenient delivery slot. A parcel can be rescheduled up to 3 times.
         </p>
 
-        <div class="slot-list">
+        <label for="reschedParcel">Parcel</label>
+        <select id="reschedParcel" class="parcel-picker"></select>
+
+        <div class="slot-list" style="margin-top:16px">
 
             <button class="slot" onclick="selectSlot(this)">
                 <strong>Today</strong>
@@ -419,12 +1022,13 @@
     </div>
 
 </div>
+
 <!-- Issue Resolution Modal -->
 <div class="modal" id="issueModal">
 
     <div class="modal-content">
 
-        <button class="close-btn" onclick="closeIssue()">×</button>
+        <button class="close-btn" onclick="closeIssue()" aria-label="Close">×</button>
 
         <div class="modal-icon">🛠️</div>
 
@@ -434,7 +1038,10 @@
             Tell us what happened with your parcel.
         </p>
 
-        <div class="issue-list">
+        <label for="issueParcel">Parcel</label>
+        <select id="issueParcel" class="parcel-picker"></select>
+
+        <div class="issue-list" style="margin-top:16px">
 
             <button class="issue-option" onclick="selectIssue(this, 'Delivery Delay')">
                 🚚
@@ -477,12 +1084,13 @@
     </div>
 
 </div>
+
 <!-- Damage Report Modal -->
 <div class="modal" id="damageModal">
 
     <div class="modal-content">
 
-        <button class="close-btn" onclick="closeDamage()">×</button>
+        <button class="close-btn" onclick="closeDamage()" aria-label="Close">×</button>
 
         <div class="modal-icon">📸</div>
 
@@ -492,15 +1100,10 @@
             Provide details and proof of the damage to your parcel.
         </p>
 
-        <label>Parcel ID</label>
-        <input
-            type="text"
-            id="damageParcelId"
-            value="PC10234"
-            readonly
-        >
+        <label for="damageParcel">Parcel</label>
+        <select id="damageParcel" class="parcel-picker"></select>
 
-        <label>Damage Type</label>
+        <label for="damageType">Damage Type</label>
         <select id="damageType">
             <option value="">Select damage type</option>
             <option>Package torn</option>
@@ -510,19 +1113,21 @@
             <option>Other</option>
         </select>
 
-        <label>Description</label>
+        <label for="damageDescription">Description</label>
         <textarea
             id="damageDescription"
-            placeholder="Describe the damage..."
+            placeholder="Describe the damage (at least 10 characters)..."
             rows="4"
+            maxlength="400"
         ></textarea>
 
-        <label>Upload Proof</label>
+        <label for="damageProof">Upload Proof (photo, max 5 MB)</label>
         <input
             type="file"
             id="damageProof"
             accept="image/*"
         >
+        <small class="field-hint">Only the file name is saved in this demo, not the photo itself.</small>
 
         <button class="confirm-btn" onclick="submitDamage()">
             Submit Damage Report
@@ -531,12 +1136,13 @@
     </div>
 
 </div>
+
 <!-- Delivery Verification Modal -->
 <div class="modal" id="verificationModal">
 
     <div class="modal-content">
 
-        <button class="close-btn" onclick="closeVerification()">×</button>
+        <button class="close-btn" onclick="closeVerification()" aria-label="Close">×</button>
 
         <div class="modal-icon">🔐</div>
 
@@ -544,14 +1150,18 @@
 
         <p class="modal-description">
             Is your parcel marked as delivered but you haven't received it?
+            Only parcels marked Delivered can be disputed.
         </p>
+
+        <label for="verifyParcel">Parcel</label>
+        <select id="verifyParcel" class="parcel-picker" onchange="updateVerifyInfo()"></select>
 
         <div class="verification-box">
             <div class="verification-icon">📦</div>
 
             <div>
-                <strong>Parcel PC10234</strong>
-                <p>Marked as delivered</p>
+                <strong id="verifyBoxId">-</strong>
+                <p id="verifyBoxText">-</p>
             </div>
         </div>
 
@@ -562,255 +1172,266 @@
     </div>
 
 </div>
-<!-- Safe Delivery Modal -->
+
+<!-- Safe Delivery Modal (every option has a verification step) -->
 <div class="modal" id="safeDeliveryModal">
 
     <div class="modal-content">
 
-        <button class="close-btn" onclick="closeSafeDelivery()">×</button>
+        <button class="close-btn" onclick="closeSafeDelivery()" aria-label="Close">×</button>
 
-        <div class="modal-icon">🏠</div>
+        <div class="modal-icon">🛡️</div>
 
         <h2>Safe Delivery Preference</h2>
 
         <p class="modal-description">
-            Choose where your parcel can be safely received when you are unavailable.
+            Choose who can receive your parcels when you are not available.
+            Every option has a check, so a parcel never goes to the wrong person.
         </p>
 
         <div class="safe-options">
 
-            <button class="safe-option" onclick="selectSafePlace(this, 'Home')">
-                🏠
+            <button class="safe-option" onclick="selectSafePlace(this, 'me')">
+                🔑
                 <span>
-                    <strong>Home</strong>
-                    <small>Deliver directly to my address</small>
-                </span>
-            </button>
-            <button class="action-card" onclick="openRefund()">
-    <span>💰</span>
-    <h3>Cancellation & Refund</h3>
-    <p>Cancel your parcel and track the refund status.</p>
-</button>
-
-            <button class="safe-option" onclick="selectSafePlace(this, 'Security Desk')">
-                🛡️
-                <span>
-                    <strong>Security Desk</strong>
-                    <small>Leave the parcel with security</small>
+                    <strong>Only me (OTP handover)</strong>
+                    <small>The courier hands it over only after you give a one-time code.</small>
+                    <em class="verify">Check: your 4-digit OTP</em>
                 </span>
             </button>
 
-            <button class="safe-option" onclick="selectSafePlace(this, 'College Reception')">
-                🏫
-                <span>
-                    <strong>College Reception</strong>
-                    <small>Deliver to the authorized reception desk</small>
-                </span>
-            </button>
-
-            <button class="safe-option" onclick="selectSafePlace(this, 'Authorized Person')">
+            <button class="safe-option" onclick="selectSafePlace(this, 'trusted')">
                 👤
                 <span>
-                    <strong>Authorized Person</strong>
-                    <small>Hand over to a trusted person</small>
+                    <strong>Trusted person</strong>
+                    <small>Someone you name can receive it for you.</small>
+                    <em class="verify">Check: their name + PIN + photo ID</em>
+                </span>
+            </button>
+
+            <button class="safe-option" onclick="selectSafePlace(this, 'reception')">
+                🏢
+                <span>
+                    <strong>Reception / security desk</strong>
+                    <small>Building or college staff accept the parcel and sign for it.</small>
+                    <em class="verify">Check: staff signature + handover photo</em>
+                </span>
+            </button>
+
+            <button class="safe-option" onclick="selectSafePlace(this, 'spot')">
+                📍
+                <span>
+                    <strong>Safe spot (leave at door)</strong>
+                    <small>The courier leaves it at your saved spot. Prepaid, low-value parcels only.</small>
+                    <em class="verify">Check: photo + GPS location proof</em>
                 </span>
             </button>
 
         </div>
 
-        <button class="confirm-btn" onclick="saveSafePlace()">
+        <!-- shown only when "Trusted person" is selected -->
+        <div class="trusted-fields" id="trustedFields">
+
+            <label for="trustedName">Person's full name</label>
+            <input type="text" id="trustedName" placeholder="e.g. Ravi Kumar" maxlength="40">
+
+            <label for="trustedMobile">Mobile number</label>
+            <input type="tel" id="trustedMobile" placeholder="10-digit mobile number" maxlength="10" inputmode="numeric">
+
+            <label for="trustedRelation">Relationship</label>
+            <select id="trustedRelation">
+                <option value="">Select relationship</option>
+                <option>Family member</option>
+                <option>Neighbour</option>
+                <option>Friend</option>
+                <option>Colleague</option>
+            </select>
+
+        </div>
+
+        <button class="confirm-btn" id="safeSaveBtn" onclick="saveSafePlace()">
             Save Preference
         </button>
+
+        <div class="safe-result" id="safeResult"></div>
+
+        <p class="field-hint">The SMS, photo ID and handover alerts are simulated in this demo. They need a courier backend in real life.</p>
 
     </div>
 
 </div>
-<!-- Missed Delivery Prevention -->
-<section class="prevention-section">
 
-    <div class="prevention-content">
-
-        <div class="prevention-icon">
-            🔔
-        </div>
-
-        <div>
-            <p class="small-title">DELIVERY REMINDER</p>
-            <h2>Your parcel is arriving soon</h2>
-            <p>
-                PC10234 is scheduled for delivery today between
-                <strong>4:00 PM – 6:00 PM</strong>.
-            </p>
-        </div>
-
-    </div>
-
-    <div class="prevention-actions">
-
-        <button onclick="confirmAvailability()">
-            ✓ I'm Available
-        </button>
-
-        <button onclick="openReschedule()">
-            🕒 Reschedule
-        </button>
-
-        <button onclick="openSafeDelivery()">
-            🏠 Safe Delivery
-        </button>
-
-    </div>
-
-</section>
 <!-- Cancellation & Refund Modal -->
 <div class="modal" id="refundModal">
 
     <div class="modal-content">
 
-        <button class="close-btn" onclick="closeRefund()">×</button>
+        <button class="close-btn" onclick="closeRefund()" aria-label="Close">×</button>
 
         <div class="modal-icon">💰</div>
 
         <h2>Cancellation & Refund</h2>
 
         <p class="modal-description">
-            Manage your parcel cancellation and check refund status.
+            Cancel a parcel and follow the refund. The company processes the refund and updates the steps here.
         </p>
+
+        <label for="refundParcel">Parcel</label>
+        <select id="refundParcel" class="parcel-picker" onchange="refreshRefundView()"></select>
 
         <div class="verification-box">
 
             <div class="verification-icon">📦</div>
 
             <div>
-                <strong>Parcel PC10234</strong>
-                <p>Currently Out for Delivery</p>
+                <strong id="refundBoxId">-</strong>
+                <p id="refundBoxText">-</p>
             </div>
 
         </div>
 
-        <button class="confirm-btn" onclick="requestCancellation()">
+        <button class="confirm-btn" id="refundBtn" onclick="requestCancellation()">
             Request Cancellation
         </button>
 
         <div class="refund-status">
 
-    <strong>Refund Status</strong>
+            <strong>Refund Status</strong>
 
-    <div class="refund-timeline">
+            <div class="refund-timeline">
 
-        <div class="refund-step active">
-            <span>✓</span>
-            <div>
-                <strong>Cancellation Request</strong>
-                <small>Request can be submitted</small>
+                <div class="refund-step" id="rs1">
+                    <span>1</span>
+                    <div>
+                        <strong>Cancellation Request</strong>
+                        <small>Request can be submitted</small>
+                    </div>
+                </div>
+
+                <div class="refund-step" id="rs2">
+                    <span>2</span>
+                    <div>
+                        <strong>Refund Processing</strong>
+                        <small>Refund will be processed after approval</small>
+                    </div>
+                </div>
+
+                <div class="refund-step" id="rs3">
+                    <span>3</span>
+                    <div>
+                        <strong>Refund Completed</strong>
+                        <small>Amount credited to original payment method</small>
+                    </div>
+                </div>
+
             </div>
-        </div>
 
-        <div class="refund-step">
-            <span>2</span>
-            <div>
-                <strong>Refund Processing</strong>
-                <small>Refund will be processed after approval</small>
-            </div>
-        </div>
+            <p class="refund-amount" id="refundAmount">Refund Amount: -</p>
 
-        <div class="refund-step">
-            <span>3</span>
-            <div>
-                <strong>Refund Completed</strong>
-                <small>Amount credited to original payment method</small>
-            </div>
         </div>
 
     </div>
-
-    <p class="refund-amount">Refund Amount: ₹500</p>
 
 </div>
 
-    </div>
+<!-- Support Modal -->
+<div class="modal" id="supportModal">
 
-</div>
-<!-- Settings -->
-<section class="settings-section" id="settings">
+    <div class="modal-content">
 
-    <div class="section-heading">
-        <div>
-            <p class="small-title">PREFERENCES</p>
-            <h2>Settings</h2>
-        </div>
-    </div>
+        <button class="close-btn" onclick="closeSupport()" aria-label="Close">×</button>
 
-    <div class="settings-list">
+        <div class="modal-icon">💬</div>
 
-        <div class="setting-item">
-            <div>
-                <strong>Delivery Notifications</strong>
-                <p>Receive alerts when your parcel status changes.</p>
-            </div>
+        <h2>Contact Support</h2>
 
-            <label class="switch">
-                <input type="checkbox" checked>
-                <span class="slider"></span>
-            </label>
-        </div>
-
-        <div class="setting-item">
-            <div>
-                <strong>SMS Alerts</strong>
-                <p>Receive important delivery updates through SMS.</p>
-            </div>
-
-            <label class="switch">
-                <input type="checkbox" checked>
-                <span class="slider"></span>
-            </label>
-        </div>
-
-        <div class="setting-item">
-            <div>
-                <strong>Missed Delivery Reminder</strong>
-                <p>Get a reminder before the delivery attempt.</p>
-            </div>
-
-            <label class="switch">
-                <input type="checkbox" checked>
-                <span class="slider"></span>
-            </label>
-        </div>
-
-    </div>
-
-</section>
-<!-- Customer Support -->
-<section class="support-section" id="support">
-
-    <div class="support-icon">💬</div>
-
-    <div class="support-content">
-        <p class="small-title">CUSTOMER SUPPORT</p>
-
-        <h2>Still need help?</h2>
-
-        <p>
-            Our support team can help with delivery issues,
-            cancellations, refunds and parcel disputes.
+        <p class="modal-description">
+            Tell us what you need. Your request is saved in this demo.
         </p>
 
-        <div class="support-actions">
+        <label for="supportParcel">Related parcel</label>
+        <select id="supportParcel" class="parcel-picker"></select>
 
-            <button onclick="contactSupport()">
-                💬 Contact Support
-            </button>
+        <label for="supportSubject">Subject</label>
+        <select id="supportSubject">
+            <option value="">Select a subject</option>
+            <option>Delivery problem</option>
+            <option>Cancellation or refund</option>
+            <option>Parcel dispute</option>
+            <option>Account or settings</option>
+            <option>Other</option>
+        </select>
 
-            <button onclick="viewHelp()">
-                ❓ View Help Guide
-            </button>
+        <label for="supportMessage">Message</label>
+        <textarea id="supportMessage" rows="4" maxlength="500" placeholder="Describe your problem (at least 10 characters)..."></textarea>
 
-        </div>
+        <button class="confirm-btn" onclick="submitSupport()">
+            Send Request
+        </button>
+
     </div>
 
-</section>
+</div>
+
+<!-- Help Guide Modal -->
+<div class="modal" id="helpModal">
+
+    <div class="modal-content">
+
+        <button class="close-btn" onclick="closeHelp()" aria-label="Close">×</button>
+
+        <div class="modal-icon">❓</div>
+
+        <h2>ParcelCare Help Guide</h2>
+
+        <ol class="help-steps">
+            <li><strong>Add a parcel</strong> with the "Add Parcel" button.</li>
+            <li><strong>Find it</strong> by typing its ID in "Find Your Parcel", or click it in My Parcels.</li>
+            <li><strong>Record progress</strong> with "Add a tracking checkpoint" (demo data entered by hand).</li>
+            <li><strong>Reschedule</strong> if you will not be home.</li>
+            <li><strong>Report damage</strong> with a photo as proof.</li>
+            <li><strong>Not received?</strong> Use Delivery Verification on a parcel marked Delivered.</li>
+            <li><strong>Cancel</strong> a parcel and follow the refund steps.</li>
+        </ol>
+
+        <button class="confirm-btn" onclick="closeHelp()">Got it</button>
+
+    </div>
+
+</div>
+
+<!-- Profile Modal -->
+<div class="modal" id="profileModal">
+
+    <div class="modal-content">
+
+        <button class="close-btn" onclick="closeProfile()" aria-label="Close">×</button>
+
+        <div class="profile-head">
+            <span class="avatar avatar-lg" id="profileAvatarLg">U</span>
+            <div>
+                <h2 id="profileFullName">User</h2>
+                <p class="modal-description" id="profileUsername"></p>
+            </div>
+        </div>
+
+        <dl class="profile-details">
+            <div><dt>Account type</dt><dd id="profileRole">-</dd></div>
+            <div><dt>Email</dt><dd id="profileEmail">-</dd></div>
+            <div><dt>Member since</dt><dd id="profileSince">-</dd></div>
+            <div><dt id="profileCountLabel">Parcels</dt><dd id="profileParcels">0</dd></div>
+            <div data-role="customer"><dt>Support requests</dt><dd id="profileTickets">0</dd></div>
+        </dl>
+
+        <button class="confirm-btn" onclick="logout()">Log out</button>
+        <button class="ghost-btn danger-ghost" onclick="clearMyData()">Delete my data</button>
+
+        <p class="field-hint">Data lives only in this browser. Clearing the browser's site data will remove it.</p>
+
+    </div>
+
+</div>
+
     </main>
 
 </div>
@@ -820,7 +1441,10 @@
     <div class="footer-content">
 
         <div>
-            <h3>📦 ParcelCare</h3>
+            <h3 class="footer-logo">
+                <svg class="logo-mark" viewBox="0 0 48 48" aria-hidden="true"><use href="#pcLogoMark"/></svg>
+                ParcelCare
+            </h3>
             <p>
                 Smart parcel delivery and resolution platform.
             </p>
@@ -828,17 +1452,19 @@
 
         <div class="footer-links">
             <a href="#dashboard">Dashboard</a>
-            <a href="#tracking">Tracking</a>
+            <a href="#myParcels">Parcels</a>
             <a href="#issues">Issues</a>
         </div>
 
     </div>
 
     <div class="footer-bottom">
-        © 2026 ParcelCare. Front-end project developed using HTML, CSS and JavaScript.
+        © 2026 ParcelCare. Front-end project developed using HTML, CSS and JavaScript. Demo data is stored in your browser only.
     </div>
 
 </footer>
+
+    </div>
 
     <script src="script.js"></script>
 </body>
